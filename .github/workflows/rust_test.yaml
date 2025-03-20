@@ -1,4 +1,4 @@
-# Runs our tests and reports code coverage to code cov
+# Runs our tests
 
 # only needs to read the code
 permissions:
