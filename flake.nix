@@ -1,5 +1,5 @@
 {
-  description = "INSERT DESCRIPTION HERE";
+  description = "Rust CI project";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -18,10 +18,15 @@
       };
 
       rustToolchain = pkgs.rust-bin.stable.latest.default;
+      
+      # Read package metadata from Cargo.toml
+      cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
+      packageName = cargoToml.package.name;
+      packageVersion = cargoToml.package.version;
 
       app = pkgs.rustPlatform.buildRustPackage {
-        pname = "CARGO PACKAGE NAME HERE";
-        version = "CARGO PACKAGE VERSION HERE (i.e 0.1.0)";
+        pname = packageName;
+        version = packageVersion;
         
         src = ./.;
         
