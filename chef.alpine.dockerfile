@@ -20,7 +20,7 @@ RUN cargo build --release --target x86_64-unknown-linux-musl --bin app
 # runtime image
 FROM alpine AS runtime
 RUN addgroup -S myuser && adduser -S myuser -G myuser
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/app /usr/local/bin/
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/app /usr/local/bin/app
 
 # just for convienence, but you should really consider using either docker
 # volumes (comopose) or ConfigMaps (kubernetes) for deployments.
