@@ -13,18 +13,16 @@ RUN cargo chef prepare --recipe-path recipe.json
 
 # build deps
 FROM chef AS builder
-ARG BINARY_NAME
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
 # build our code
 COPY . .
-RUN cargo build --release --bin ${BINARY_NAME}
+RUN cargo build --release --bin
 
 # final runtime image
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
-ARG BINARY_NAME
 ENV APP_ENV=production
 RUN apt-get update -y \
   && apt-get install -y --no-install-recommends openssl ca-certificates \
