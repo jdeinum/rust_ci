@@ -7,12 +7,12 @@ WORKDIR /app
 RUN apt update
 
 # create our recipe
-FROM chef as planner
+FROM chef AS planner
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
 # build deps
-FROM chef as builder
+FROM chef AS builder
 ARG BINARY_NAME
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
@@ -31,10 +31,15 @@ RUN apt-get update -y \
   && apt-get autoremove -y \
   && apt-get clean -y \
   && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /app/target/release/${BINARY_NAME} ${BINARY_NAME}
+COPY --from=builder /app/target/release/app app
+
+# just for convienence, but you should really consider using either docker
+# volumes (comopose) or ConfigMaps (kubernetes) for deployments.
 COPY configuration configuration
+
+# need access to migrations when we start
 COPY migrations migrations
 
 # run
-ENTRYPOINT ["./${BINARY_NAME}"]
+ENTRYPOINT ["./app]
 
