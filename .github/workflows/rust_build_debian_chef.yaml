@@ -59,3 +59,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+
+  security-scan:
+    needs: docker
+    uses: ./.github/workflows/trivy.yml
+    with:
+      image-name: ${{ needs.docker.outputs.image-name }}

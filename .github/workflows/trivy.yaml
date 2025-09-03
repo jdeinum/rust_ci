@@ -1,0 +1,50 @@
+# scan our codebase for unmaintained crates, unvalid licenses, etc
+# uses the deny.toml file in the root directory of our rust project
+name: trivy
+
+# only run when our dependencies change, or weekly on sunday
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        description: "Container image name to scan"
+        required: true
+        type: string
+
+jobs:
+  vuln:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: "fs"
+          ignore-unfixed: true
+          format: "sarif"
+          output: "trivy-fs.sarif"
+          severity: "CRITICAL,HIGH"
+
+      - name: Run Trivy vulnerability scanner (image)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: "${{ inputs.image-name }}"
+          skip-setup-trivy: true
+          format: "sarif"
+          output: "trivy-image.sarif"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+
+      - name: Combine SARIF files
+        run: |
+          jq -s '{ "version": "2.1.0", "runs": map(.runs) | add }' trivy-fs.sarif trivy-image.sarif > combined.sarif
+          # Uncomment if you add cargo-deny
+          # jq -s '{ "version": "2.1.0", "runs": map(.runs) | add }' trivy-fs.sarif trivy-image.sarif cargo-deny.sarif > combined.sarif
+
+      - name: Upload Combined SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "combined.sarif"
