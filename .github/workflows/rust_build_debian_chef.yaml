@@ -14,6 +14,8 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    outputs:
+      image-name: ${{ steps.vars.outputs.image_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -27,10 +29,9 @@ jobs:
 
       - name: Set up lowercase owner
         id: vars
-        run: echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
-
-      - name: Set image name
-        run: echo "IMAGE_NAME=ghcr.io/${{ steps.vars.outputs.owner }}/${{ github.event.repository.name }}" >> $GITHUB_ENV
+        run: |
+          echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          echo "image_name=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/${{ github.event.repository.name }}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -39,7 +40,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: ${{ steps.vars.outputs.image_name }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -57,8 +58,8 @@ jobs:
           provenance: mode=max
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
-          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ steps.vars.outputs.image_name }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ steps.vars.outputs.image_name }}:buildcache
 
   security-scan:
     needs: docker
