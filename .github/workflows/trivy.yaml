@@ -31,14 +31,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: "fs"
-          ignore-unfixed: true
-          format: "sarif"
-          output: "trivy-fs.sarif"
-          severity: "CRITICAL,HIGH"
+      # costs money, shame
+      # - name: Run Trivy vulnerability scanner in repo mode
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     scan-type: "fs"
+      #     ignore-unfixed: true
+      #     format: "sarif"
+      #     output: "trivy-fs.sarif"
+      #     severity: "CRITICAL,HIGH"
 
       - name: Run Trivy vulnerability scanner (image)
         uses: aquasecurity/trivy-action@master
@@ -51,11 +52,11 @@ jobs:
           vuln-type: "os,library"
           severity: "CRITICAL,HIGH"
 
-      - name: Upload Trivy FS SARIF
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: "trivy-fs.sarif"
-          category: "trivy-fs"
+      # - name: Upload Trivy FS SARIF
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: "trivy-fs.sarif"
+      #     category: "trivy-fs"
 
       - name: Upload Trivy Image SARIF
         uses: github/codeql-action/upload-sarif@v3
