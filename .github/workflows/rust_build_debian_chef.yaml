@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image-name: ${{ steps.vars.outputs.image_name }}
+      image-tag: ${{ steps.meta.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -30,7 +31,6 @@ jobs:
       - name: Set up lowercase owner
         id: vars
         run: |
-          echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
           echo "image_name=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/${{ github.event.repository.name }}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
@@ -64,8 +64,8 @@ jobs:
   security-scan:
     needs: docker
     uses: ./.github/workflows/trivy.yaml
-    with:
-      image-name: ${{ needs.docker.outputs.image-name }}
     permissions:
       contents: read
       security-events: write
+    with:
+      image-name: ${{ needs.docker.outputs.image-name }}:${{ needs.docker.outputs.image-tag }}
