@@ -13,8 +13,9 @@ on:
 
 permissions:
   contents: read
-  security-events: write # needed to upload security reports
+  security-events: write
   packages: read
+  actions: read
 
 jobs:
   vuln:

@@ -68,5 +68,6 @@ jobs:
       contents: read
       security-events: write
       packages: read
+      actions: read
     with:
       image-name: ${{ needs.docker.outputs.image-name }}:${{ needs.docker.outputs.image-tag }}
