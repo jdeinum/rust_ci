@@ -45,7 +45,6 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: "${{ inputs.image-name }}"
-          skip-setup-trivy: true
           format: "sarif"
           output: "trivy-image.sarif"
           ignore-unfixed: true
