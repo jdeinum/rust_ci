@@ -66,3 +66,6 @@ jobs:
     uses: ./.github/workflows/trivy.yaml
     with:
       image-name: ${{ needs.docker.outputs.image-name }}
+    permissions:
+      contents: read
+      security-events: write
