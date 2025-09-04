@@ -50,13 +50,14 @@ jobs:
           vuln-type: "os,library"
           severity: "CRITICAL,HIGH"
 
-      - name: Combine SARIF files
-        run: |
-          jq -s '{ "version": "2.1.0", "runs": map(.runs) | add }' trivy-fs.sarif trivy-image.sarif > combined.sarif
-          # Uncomment if you add cargo-deny
-          # jq -s '{ "version": "2.1.0", "runs": map(.runs) | add }' trivy-fs.sarif trivy-image.sarif cargo-deny.sarif > combined.sarif
-
-      - name: Upload Combined SARIF
+      - name: Upload Trivy FS SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: "combined.sarif"
+          sarif_file: "trivy-fs.sarif"
+          category: "trivy-fs"
+
+      - name: Upload Trivy Image SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-image.sarif"
+          category: "trivy-image"
