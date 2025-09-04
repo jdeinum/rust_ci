@@ -61,13 +61,14 @@ jobs:
           cache-to: type=registry,ref=${{ steps.vars.outputs.image_name }}:buildcache,mode=max
           cache-from: type=registry,ref=${{ steps.vars.outputs.image_name }}:buildcache
 
-  security-scan:
-    needs: docker
-    uses: ./.github/workflows/trivy.yaml
-    permissions:
-      contents: read
-      security-events: write
-      packages: read
-      actions: read
-    with:
-      image-name: ${{ needs.docker.outputs.image-name }}:${{ needs.docker.outputs.image-tag }}
+  # if you have code scanning enabled
+  # security-scan:
+  #   needs: docker
+  #   uses: ./.github/workflows/trivy.yaml
+  #   permissions:
+  #     contents: read
+  #     security-events: write
+  #     packages: read
+  #     actions: read
+  #   with:
+  #     image-name: ${{ needs.docker.outputs.image-name }}:${{ needs.docker.outputs.image-tag }}
