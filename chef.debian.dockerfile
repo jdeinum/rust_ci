@@ -39,5 +39,5 @@ COPY configuration configuration
 COPY migrations migrations
 
 # run
-ENTRYPOINT ["./app]
+ENTRYPOINT ["./app"]
 
