@@ -2,7 +2,7 @@
 ARG BINARY_NAME=api
 
 # Use Rust image for building
-FROM lukemathwalker/cargo-chef:latest-rust-1.85.1 as chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.89.0 AS chef
 WORKDIR /app
 RUN apt update
 
