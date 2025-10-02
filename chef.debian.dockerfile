@@ -1,6 +1,3 @@
-# Define a build-time variable for the binary name
-ARG BINARY_NAME=api
-
 # Use Rust image for building
 FROM lukemathwalker/cargo-chef:latest-rust-1.89.0 AS chef
 WORKDIR /app
@@ -18,18 +15,20 @@ RUN cargo chef cook --release --recipe-path recipe.json
 
 # build our code
 COPY . .
-RUN cargo build --release --bin
+RUN cargo build --release --bin BIN_NAME_HERE
 
 # final runtime image
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 ENV APP_ENV=production
+
+# if you don't need openssl or ca-certificates, just remove them
 RUN apt-get update -y \
   && apt-get install -y --no-install-recommends openssl ca-certificates \
   && apt-get autoremove -y \
   && apt-get clean -y \
   && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /app/target/release/app app
+COPY --from=builder /app/target/release/BIN_NAME_HERE app
 
 # just for convienence, but you should really consider using either docker
 # volumes (comopose) or ConfigMaps (kubernetes) for deployments.
