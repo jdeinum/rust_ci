@@ -1,5 +1,5 @@
-# Build our app using chef with debian as its final image
-name: build_debian_chef
+# Build our app using chef with debian slim as its final image
+name: build_debian_slim_chef
 
 permissions:
   contents: read
@@ -42,11 +42,11 @@ jobs:
         with:
           images: ${{ steps.vars.outputs.image_name }}
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=ref,event=branch
-            type=sha
+            type=semver,pattern={{version}}-debian_slim
+            type=semver,pattern={{major}}.{{minor}}-debian_slim
+            type=semver,pattern={{major}}-debian_slim
+            type=ref,event=branch,suffix=-debian_slim
+            type=sha,suffix=-debian_slim
 
       - name: Build and push
         uses: docker/build-push-action@v6
