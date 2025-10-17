@@ -1,4 +1,4 @@
-FROM blackdex/rust-musl:x86_64-musl-stable AS chef
+FROM blackdex/rust-musl:x86_64-musl-stable-1.89.0 AS chef
 USER root
 RUN cargo install cargo-chef
 WORKDIR /app
