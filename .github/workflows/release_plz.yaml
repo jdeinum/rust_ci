@@ -31,11 +31,8 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-        # we only run the pr command, cargo-dist takes care of the rest
       - name: Run release-plz
         uses: MarcoIeni/release-plz-action@v0.5
-        with:
-          command: release-pr
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_PLZ_TOKEN }}
           # RELEASE_PLZ_LOG: DEBUG
