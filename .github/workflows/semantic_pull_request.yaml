@@ -28,3 +28,7 @@ jobs:
             perf 
             docs 
             wip
+            chore 
+            test 
+            style 
+            refactor
