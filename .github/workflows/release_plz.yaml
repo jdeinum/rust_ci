@@ -1,0 +1,41 @@
+# Creates our release PR
+# Note that we need to use a secret other than secrets.GITHUB_TOKEN because
+# other workflows that are triggered on tags do not get triggered is you are
+# using the default token
+# I found out from here: https://blog.orhun.dev/automated-rust-releases/
+# and the github issue: https://github.com/orgs/community/discussions/25702
+name: Release-plz
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release-plz-pr:
+    name: Release-plz PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: release-plz-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLZ_TOKEN }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+        # we only run the pr command, cargo-dist takes care of the rest
+      - name: Run release-plz
+        uses: MarcoIeni/release-plz-action@v0.5
+        with:
+          command: release-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PLZ_TOKEN }}
+          # RELEASE_PLZ_LOG: DEBUG
