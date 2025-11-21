@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # check out our codebase
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # activate our cache
       - name: Rust Cache

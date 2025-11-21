@@ -40,7 +40,7 @@ jobs:
     # the steps for our workflow
     steps:
       # checkout our codebase
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: true
 
@@ -73,7 +73,7 @@ jobs:
     name: nightly / doc
     steps:
       # checkout the code
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: true
 
@@ -99,7 +99,7 @@ jobs:
     name: stable / fmt
     steps:
       # checkout the code
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: true
 
